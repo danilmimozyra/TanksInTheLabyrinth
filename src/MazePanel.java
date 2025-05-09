@@ -17,20 +17,24 @@ public class MazePanel extends JPanel {
     private final Tile[][] mazeGrid;
     private final int side;
     private final int cellWidth;
+    private final int wallWidth;
     private Thread thread;
+    private Thread bulletThread;
+    private Thread keyThread;
     private boolean running = true;
 
     private final int FPS = 60;
     private final int loopTime = 1000000000 / FPS;
-    private Tank tank;
+    private Tank blueTank;
     private Key key;
     private List<Bullet> bullets;
     private double shotDelay;
 
 
-    public MazePanel(int side, int width) {
+    public MazePanel(int side, int width, int pixelWidth) {
         this.side = side;
         this.cellWidth = width;
+        this.wallWidth = pixelWidth;
 
         mazeGrid = new Tile[side][side];
 
@@ -70,19 +74,19 @@ public class MazePanel extends JPanel {
     }
 
     private void drawObjects() {
-        tank = new Tank("Resources/blueTank.png");
-        tank.changeLocation(17, 21);
+        blueTank = new Tank("Resources/blueTank.png");
+        blueTank.changeLocation(17, 21);
     }
 
     private void drawBullets(){
         bullets = new ArrayList<>();
-        new Thread(() -> {
+        bulletThread = new Thread(() -> {
             while (running){
                 for (int i = 0; i < bullets.size(); i++) {
                     Bullet bullet = bullets.get(i);
                     if (bullet != null) {
-                        bullet.update();
-                        if (!bullet.check(width, height)){
+                        bullet.update(mazeGrid, cellWidth, wallWidth);
+                        if (!bullet.check()){
                             bullets.remove(bullet);
                         }
                     } else {
@@ -91,7 +95,8 @@ public class MazePanel extends JPanel {
                 }
                 sleep(6);
             }
-        }).start();
+        });
+        bulletThread.start();
     }
 
     private void setKeyBinds() {
@@ -140,11 +145,11 @@ public class MazePanel extends JPanel {
                 }
             }
         });
-        new Thread(() -> {
+        keyThread = new Thread(() -> {
             int turn = 1;
             double angle;
             while (running) {
-                angle = tank.getAngle();
+                angle = blueTank.getAngle();
                 if (key.isLeft()) {
                     angle -= turn;
                 }
@@ -152,14 +157,14 @@ public class MazePanel extends JPanel {
                     angle += turn;
                 }
                 if (key.isForth()) {
-                    tank.goForth();
+                    blueTank.goForth(mazeGrid, cellWidth, wallWidth);
                 }
                 if (key.isBack()) {
-                    tank.goBack();
+                    blueTank.goBack(mazeGrid, cellWidth, wallWidth);
                 }
                 if (key.isShoot()) {
-                    if (shotDelay == 0){
-                        bullets.add(0, new Bullet(tank.getX(), tank.getY(), tank.getAngle(), 7, 2));
+                    if (blueTank.isAlive() && shotDelay == 0 && bullets.size() < 7){
+                        bullets.add(0, new Bullet(blueTank.getX(), blueTank.getY(), blueTank.getAngle(), 7, 2.5));
                     }
                     shotDelay++;
                     if (shotDelay == 20) {
@@ -168,46 +173,59 @@ public class MazePanel extends JPanel {
                 } else {
                     shotDelay = 0;
                 }
-                tank.changeAngle(angle);
+                blueTank.changeAngle(angle);
                 sleep(5);
             }
-        }).start();
+        });
+        keyThread.start();
     }
 
     private void drawBackground() {
         g2d.setPaint(Color.CYAN);
         g2d.fillRect(0, 0, width, height);
-    }
 
-    private void drawGame() {
         g2d.setPaint(Color.BLACK);
-        int pixelWidth = 3;
-        g2d.setStroke(new BasicStroke(pixelWidth));
+        g2d.setStroke(new BasicStroke(wallWidth));
         for (int y = 0; y < side; y++) {
             for (int x = 0; x < side; x++) {
                 if (mazeGrid[y][x].isTopWall()) {
                     g2d.drawLine(x * cellWidth, y * cellWidth, cellWidth + x * cellWidth, y * cellWidth);
                 }
                 if (mazeGrid[y][x].isRightWall()) {
-                    g2d.drawLine(cellWidth - pixelWidth + x * cellWidth, y * cellWidth, cellWidth - pixelWidth + x * cellWidth, cellWidth + y * cellWidth);
+                    g2d.drawLine(cellWidth - wallWidth + x * cellWidth, y * cellWidth, cellWidth - wallWidth + x * cellWidth, cellWidth + y * cellWidth);
                 }
                 if (mazeGrid[y][x].isBottomWall()) {
-                    g2d.drawLine(x * cellWidth, cellWidth - pixelWidth + y * cellWidth, cellWidth + x * cellWidth, cellWidth - pixelWidth + y * cellWidth);
+                    g2d.drawLine(x * cellWidth, cellWidth - wallWidth + y * cellWidth, cellWidth + x * cellWidth, cellWidth - wallWidth + y * cellWidth);
                 }
                 if (mazeGrid[y][x].isLeftWall()) {
                     g2d.drawLine(x * cellWidth, y * cellWidth, x * cellWidth, cellWidth + y * cellWidth);
                 }
             }
         }
+    }
 
+    private void drawGame() {
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             if (bullet != null) {
                 bullet.draw(g2d);
+                long now = System.currentTimeMillis();
+                long iframeDuration = 80;
+
+                if (isBulletHittingTank(bullet, blueTank)) {
+                    boolean recentlyShot = (now - bullet.getCreationTime()) < iframeDuration;
+
+                    if (recentlyShot) {
+                        continue;
+                    }
+                    blueTank.setAlive(false);
+                    bullets.remove(bullet);
+                }
             }
         }
-
-        tank.draw(g2d);
+        if (blueTank.isAlive()) {
+            blueTank.draw(g2d);
+        }
     }
 
     private void render() {
@@ -222,6 +240,17 @@ public class MazePanel extends JPanel {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isBulletHittingTank(Bullet bullet, Tank tank) {
+        double dx = bullet.getCenterX() - tank.getCenterX();
+        double dy = bullet.getCenterY() - tank.getCenterY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        double bulletRadius = bullet.getSize() / 2.0;
+        double tankRadius = tank.getRadius();
+
+        return tank.isAlive() && distance < bulletRadius + tankRadius;
     }
 
     public void newMaze() {
