@@ -1,25 +1,35 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tank {
 
     public final static double tankWidth = 44;
     public final static double tankLength = 44;
-    public final static double forthSpeed = 1;
+    public final static double forthSpeed = 0.9;
     public final static double backSpeed = 0.7;
     private double x;
     private double y;
     private double angle;
     private final ImageIcon image;
     private boolean alive;
+    private final List<Bullet> bullets;
+    private int shotDelay;
+    private Key key;
+    private final TankType color;
 
 
-    public Tank (String imagePath) {
+    public Tank(String imagePath, TankType type, int forthKey, int backKey, int leftKey, int rightKey, int shootKey) {
         x = 0;
         y = 0;
         image = new ImageIcon(imagePath);
         alive = true;
+        bullets = new ArrayList<>();
+        color = type;
+        key = new Key(forthKey, backKey, leftKey, rightKey, shootKey);
     }
 
     public void draw(Graphics2D g2d) {
@@ -32,7 +42,7 @@ public class Tank {
         g2d.setTransform(oldTransform);
     }
 
-    public void changeLocation(double nx, double ny){
+    public void changeLocation(double nx, double ny) {
         x = nx;
         y = ny;
     }
@@ -41,7 +51,7 @@ public class Tank {
         double nextX = x + Math.cos(Math.toRadians(angle)) * forthSpeed;
         double nextY = y + Math.sin(Math.toRadians(angle)) * forthSpeed;
 
-        if (canMove(nextX, nextY, mazeGrid, cellSize,wallThickness)
+        if (canMove(nextX, nextY, mazeGrid, cellSize, wallThickness)
                 && canMoveTo(nextX, nextY, mazeGrid, cellSize, wallThickness)) {
             x = nextX;
             y = nextY;
@@ -68,8 +78,8 @@ public class Tank {
         };
 
         for (double[] corner : corners) {
-            int cellX = (int)(corner[0] / cellSize);
-            int cellY = (int)(corner[1] / cellSize);
+            int cellX = (int) (corner[0] / cellSize);
+            int cellY = (int) (corner[1] / cellSize);
 
             if (cellX < 0 || cellY < 0 || cellY >= mazeGrid.length || cellX >= mazeGrid[0].length)
                 return false;
@@ -119,8 +129,8 @@ public class Tank {
     }
 
     private boolean isWallAt(double x, double y, Tile[][] mazeGrid, int cellSize, int wallThickness) {
-        int cellX = (int)(x / cellSize);
-        int cellY = (int)(y / cellSize);
+        int cellX = (int) (x / cellSize);
+        int cellY = (int) (y / cellSize);
 
         if (cellX < 0 || cellY < 0 || cellY >= mazeGrid.length || cellX >= mazeGrid[0].length)
             return true;
@@ -137,13 +147,21 @@ public class Tank {
         return false;
     }
 
-    public void changeAngle(double angle){
+    public void changeAngle(double angle) {
         if (angle < 0) {
             angle = 359;
         } else if (angle > 359) {
             angle = 0;
         }
         this.angle = angle;
+    }
+
+    public void turnLeft() {
+        changeAngle(angle - 1);
+    }
+
+    public void turnRight() {
+        changeAngle(angle + 1);
     }
 
     public double getX() {
@@ -154,11 +172,11 @@ public class Tank {
         return y;
     }
 
-    public double getCenterX(){
+    public double getCenterX() {
         return x + tankLength / 2;
     }
 
-    public double getCenterY(){
+    public double getCenterY() {
         return y + tankWidth / 2;
     }
 
@@ -166,7 +184,7 @@ public class Tank {
         return angle;
     }
 
-    public double getRadius(){
+    public double getRadius() {
         return tankWidth / 2;
     }
 
@@ -176,5 +194,47 @@ public class Tank {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public void addBullet(int index, Bullet bullet) {
+        bullets.add(index, bullet);
+    }
+
+    public void removeBullet(Bullet bullet) {
+        bullets.remove(bullet);
+    }
+
+    public int getBulletsSize() {
+        return bullets.size();
+    }
+
+    public int getShotDelay() {
+        return shotDelay;
+    }
+
+    public void increaseDelay() {
+        shotDelay += 1;
+    }
+
+    ;
+
+    public void setShotDelay(int shotDelay) {
+        this.shotDelay = shotDelay;
+    }
+
+    public Key getKey() {
+        return key;
+    }
+
+    public void setKey(Key key){
+        this.key = key;
+    }
+
+    public TankType getColor() {
+        return color;
     }
 }

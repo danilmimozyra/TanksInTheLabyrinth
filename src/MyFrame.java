@@ -8,7 +8,7 @@ public class MyFrame extends JFrame{
     private final MazePanel mazePanel;
 
     public MyFrame(){
-        mazePanel = new MazePanel(9, 86, 2);
+        mazePanel = new MazePanel(9, 86, 2, 4);
 
         this.add(mazePanel);
 

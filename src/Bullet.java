@@ -12,10 +12,12 @@ public class Bullet {
     private final Shape shape;
     private final Color color = Color.BLACK;
     private final double size;
+    private final TankType owner;
 
-    public Bullet (double x, double y, double angle, double size, double speed){
+    public Bullet (double x, double y, double angle, double size, double speed, TankType type){
         x += Tank.tankLength / 2 - (size / 2);
         y += Tank.tankWidth / 2 - (size / 2);
+        owner = type;
         this.x = x;
         this.y = y;
         this.size = size;
@@ -88,5 +90,9 @@ public class Bullet {
 
     public double getSize() {
         return size;
+    }
+
+    public TankType getOwner() {
+        return owner;
     }
 }
