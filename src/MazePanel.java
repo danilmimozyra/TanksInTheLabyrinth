@@ -8,6 +8,7 @@ import java.util.List;
 
 public class MazePanel extends JPanel {
 
+    private final MyFrame parentFrame;
     private Graphics2D g2d;
     private BufferedImage image;
     private int width;
@@ -16,18 +17,23 @@ public class MazePanel extends JPanel {
     private final int side;
     private final int cellWidth;
     private final int wallWidth;
-    private final boolean running = true;
+    private boolean running;
 
     private final int FPS = 60;
     private final int loopTime = 1000000000 / FPS;
     private final Tank[] tanks;
     private final List<Bullet> allBullets;
 
+    private boolean roundOver = false;
+    private long roundEndTime = 0;
+    private static final long ROUND_DELAY = 2500;
 
-    public MazePanel(int side, int width, int pixelWidth, int amount) {
+
+    public MazePanel(int side, int width, int pixelWidth, int amount, MyFrame frame) {
         this.side = side;
         this.cellWidth = width;
         this.wallWidth = pixelWidth;
+        parentFrame = frame;
 
         mazeGrid = new Tile[side][side];
         tanks = new Tank[amount];
@@ -40,6 +46,7 @@ public class MazePanel extends JPanel {
 
     public void start() {
         newMaze();
+        running = true;
         width = getWidth();
         height = getHeight();
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -56,6 +63,14 @@ public class MazePanel extends JPanel {
                 drawBackground();
                 drawGame();
                 render();
+                checkRoundEnd();
+                if (roundOver && System.currentTimeMillis() - roundEndTime >= ROUND_DELAY) {
+                    roundOver = false;
+                    running = false;
+                    sleep(30);
+                    start();
+                    return;
+                }
 
                 time = System.nanoTime() - startTime;
                 if (time < loopTime) {
@@ -74,7 +89,7 @@ public class MazePanel extends JPanel {
         Tank redTank = new Tank("Resources/redTank.png", TankType.Red, 87, 83, 65, 68, 81);
         redTank.changeLocation(17, 21);
         tanks[0] = redTank;
-        if (tanks.length >= 2){
+        if (tanks.length >= 2) {
             Tank greenTank = new Tank("Resources/greenTank.png", TankType.Green, 104, 101, 100, 102, 96);
             greenTank.changeLocation((side - 1) * cellWidth + 17, (side - 1) * cellWidth + 21);
             greenTank.changeAngle(180);
@@ -94,7 +109,7 @@ public class MazePanel extends JPanel {
         }
     }
 
-    private void startBulletThread() {
+    private void startBulletThread() throws ConcurrentModificationException{
         Thread bulletThread = new Thread(() -> {
             while (running) {
                 for (Tank tank : tanks) {
@@ -125,26 +140,28 @@ public class MazePanel extends JPanel {
             public void keyPressed(KeyEvent e) {
                 int code = e.getKeyCode();
                 for (Tank tank : tanks) {
-                    Key key = tank.getKey();
-                    if (code == key.getLeftKey()) {
-                        key.setLeft(true);
-                        break;
-                    }
-                    if (code == key.getRightKey()) {
-                        key.setRight(true);
-                        break;
-                    }
-                    if (code == key.getForthKey()) {
-                        key.setForth(true);
-                        break;
-                    }
-                    if (code == key.getBackKey()) {
-                        key.setBack(true);
-                        break;
-                    }
-                    if (code == key.getShootKey()) {
-                        key.setShoot(true);
-                        break;
+                    if (tank.isAlive()) {
+                        Key key = tank.getKey();
+                        if (code == key.getLeftKey()) {
+                            key.setLeft(true);
+                            break;
+                        }
+                        if (code == key.getRightKey()) {
+                            key.setRight(true);
+                            break;
+                        }
+                        if (code == key.getForthKey()) {
+                            key.setForth(true);
+                            break;
+                        }
+                        if (code == key.getBackKey()) {
+                            key.setBack(true);
+                            break;
+                        }
+                        if (code == key.getShootKey()) {
+                            key.setShoot(true);
+                            break;
+                        }
                     }
                 }
             }
@@ -153,51 +170,59 @@ public class MazePanel extends JPanel {
             public void keyReleased(KeyEvent e) {
                 int code = e.getKeyCode();
                 for (Tank tank : tanks) {
-                    Key key = tank.getKey();
-                    if (code == key.getLeftKey()) {
-                        key.setLeft(false);
+                    if (tank.isAlive()) {
+                        Key key = tank.getKey();
+                        if (code == key.getLeftKey()) {
+                            key.setLeft(false);
+                            break;
+                        }
+                        if (code == key.getRightKey()) {
+                            key.setRight(false);
+                            break;
+                        }
+                        if (code == key.getForthKey()) {
+                            key.setForth(false);
+                            break;
+                        }
+                        if (code == key.getBackKey()) {
+                            key.setBack(false);
+                            break;
+                        }
+                        if (code == key.getShootKey()) {
+                            key.setShoot(false);
+                            break;
+                        }
                     }
-                    if (code == key.getRightKey()) {
-                        key.setRight(false);
-                    }
-                    if (code == key.getForthKey()) {
-                        key.setForth(false);
-                    }
-                    if (code == key.getBackKey()) {
-                        key.setBack(false);
-                    }
-                    if (code == key.getShootKey()) {
-                        key.setShoot(false);
-                    }
-                    tank.setKey(key);
                 }
             }
         });
         Thread keyThread = new Thread(() -> {
-                while (running) {
-                    for (Tank tank : tanks) {
-                    if (tank.getKey().isLeft()) {
-                        tank.turnLeft();
-                    }
-                    if (tank.getKey().isRight()) {
-                        tank.turnRight();
-                    }
-                    if (tank.getKey().isForth()) {
-                        tank.goForth(mazeGrid, cellWidth, wallWidth);
-                    }
-                    if (tank.getKey().isBack()) {
-                        tank.goBack(mazeGrid, cellWidth, wallWidth);
-                    }
-                    if (tank.getKey().isShoot()) {
-                        if (tank.isAlive() && tank.getShotDelay() == 0 && tank.getBulletsSize() < 7) {
-                            tank.addBullet(0, new Bullet(tank.getX(), tank.getY(), tank.getAngle(), 7, 2, tank.getColor()));
+            while (running) {
+                for (Tank tank : tanks) {
+                    if (tank.isAlive()) {
+                        if (tank.getKey().isLeft()) {
+                            tank.turnLeft();
                         }
-                        tank.increaseDelay();
-                        if (tank.getShotDelay() == 20) {
+                        if (tank.getKey().isRight()) {
+                            tank.turnRight();
+                        }
+                        if (tank.getKey().isForth()) {
+                            tank.goForth(mazeGrid, cellWidth, wallWidth);
+                        }
+                        if (tank.getKey().isBack()) {
+                            tank.goBack(mazeGrid, cellWidth, wallWidth);
+                        }
+                        if (tank.getKey().isShoot()) {
+                            if (tank.isAlive() && tank.getShotDelay() == 0 && tank.getBulletsSize() < 7) {
+                                tank.addBullet(0, new Bullet(tank.getX(), tank.getY(), tank.getAngle(), 7, 2, tank.getColor()));
+                            }
+                            tank.increaseDelay();
+                            if (tank.getShotDelay() == 20) {
+                                tank.setShotDelay(0);
+                            }
+                        } else {
                             tank.setShotDelay(0);
                         }
-                    } else {
-                        tank.setShotDelay(0);
                     }
                 }
                 sleep(5);
@@ -237,7 +262,7 @@ public class MazePanel extends JPanel {
         }
 
         long now = System.currentTimeMillis();
-        long iframeDuration = 80;
+        long iframeDuration = 100;
         for (Tank tank : tanks) {
             for (Bullet bullet : allBullets) {
                 if (bullet != null && tank.isAlive()) {
@@ -270,6 +295,26 @@ public class MazePanel extends JPanel {
         Graphics g = getGraphics();
         g.drawImage(image, 0, 0, null);
         g.dispose();
+    }
+
+    private void checkRoundEnd() {
+        List<Tank> alive = new ArrayList<>();
+        for (Tank tank : tanks) {
+            if (tank.isAlive()) {
+                alive.add(tank);
+            }
+        }
+
+        if (!roundOver && alive.size() <= 1 && tanks.length > 1) {
+            Tank winner = alive.isEmpty() ? null : alive.get(0);
+
+            if (parentFrame != null) {
+                parentFrame.updateWins(winner);
+            }
+
+            roundOver = true;
+            roundEndTime = System.currentTimeMillis();
+        }
     }
 
     private void sleep(long speed) {
@@ -341,7 +386,7 @@ public class MazePanel extends JPanel {
         return x >= 0 && x < side && y >= 0 && y < side;
     }
 
-    public Tank findOwner(TankType type){
+    public Tank findOwner(TankType type) {
         for (Tank tank : tanks) {
             if (tank.getColor() == type) {
                 return tank;

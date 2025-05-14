@@ -15,7 +15,7 @@ public class Bullet {
     private final TankType owner;
 
     public Bullet (double x, double y, double angle, double size, double speed, TankType type){
-        x += Tank.tankLength / 2 - (size / 2);
+        x += Tank.tankWidth/ 2 - (size / 2);
         y += Tank.tankWidth / 2 - (size / 2);
         owner = type;
         this.x = x;

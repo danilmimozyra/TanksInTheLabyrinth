@@ -7,8 +7,7 @@ import java.util.List;
 
 public class Tank {
 
-    public final static double tankWidth = 44;
-    public final static double tankLength = 44;
+    public final static double tankWidth = 38;
     public final static double forthSpeed = 0.9;
     public final static double backSpeed = 0.7;
     private double x;
@@ -36,7 +35,7 @@ public class Tank {
         AffineTransform oldTransform = g2d.getTransform();
         g2d.translate(x, y);
         AffineTransform tran = new AffineTransform();
-        tran.rotate(Math.toRadians(angle), tankLength / 2, tankWidth / 2);
+        tran.rotate(Math.toRadians(angle), tankWidth / 2, tankWidth / 2);
         g2d.drawImage(image.getImage(), tran, null);
 
         g2d.setTransform(oldTransform);
@@ -72,9 +71,9 @@ public class Tank {
     public boolean canMoveTo(double nextX, double nextY, Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double[][] corners = {
                 {nextX, nextY},
-                {nextX + tankLength, nextY},
+                {nextX + tankWidth, nextY},
                 {nextX, nextY + tankWidth},
-                {nextX + tankLength, nextY + tankWidth}
+                {nextX + tankWidth, nextY + tankWidth}
         };
 
         for (double[] corner : corners) {
@@ -101,13 +100,13 @@ public class Tank {
         int step = 3;
         double checkX, checkY;
 
-        for (int i = 0; i <= tankLength; i += step) {
+        for (int i = 0; i <= tankWidth; i += step) {
             checkX = nextX + i;
             checkY = nextY;
             if (isWallAt(checkX, checkY, mazeGrid, cellSize, wallThickness)) return false;
         }
 
-        for (int i = 0; i <= tankLength; i += step) {
+        for (int i = 0; i <= tankWidth; i += step) {
             checkX = nextX + i;
             checkY = nextY + tankWidth;
             if (isWallAt(checkX, checkY, mazeGrid, cellSize, wallThickness)) return false;
@@ -120,7 +119,7 @@ public class Tank {
         }
 
         for (int i = 0; i <= tankWidth; i += step) {
-            checkX = nextX + tankLength;
+            checkX = nextX + tankWidth;
             checkY = nextY + i;
             if (isWallAt(checkX, checkY, mazeGrid, cellSize, wallThickness)) return false;
         }
@@ -173,7 +172,7 @@ public class Tank {
     }
 
     public double getCenterX() {
-        return x + tankLength / 2;
+        return x + tankWidth / 2;
     }
 
     public double getCenterY() {
