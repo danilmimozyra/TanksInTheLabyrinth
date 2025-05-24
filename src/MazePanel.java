@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MazePanel extends JPanel {
 
-    private final MyFrame parentFrame;
+    private final GamePanel parentPanel;
     private Graphics2D g2d;
     private BufferedImage image;
     private int width;
@@ -21,7 +21,7 @@ public class MazePanel extends JPanel {
 
     private final int FPS = 60;
     private final int loopTime = 1000000000 / FPS;
-    private final Tank[] tanks;
+    private Tank[] tanks;
     private final List<Bullet> allBullets;
 
     private boolean roundOver = false;
@@ -29,17 +29,17 @@ public class MazePanel extends JPanel {
     private static final long ROUND_DELAY = 2500;
 
 
-    public MazePanel(int side, int width, int pixelWidth, int amount, MyFrame frame) {
+    public MazePanel(int side, int width, int pixelWidth, int amount, GamePanel panel) {
         this.side = side;
         this.cellWidth = width;
         this.wallWidth = pixelWidth;
-        parentFrame = frame;
+        parentPanel = panel;
 
         mazeGrid = new Tile[side][side];
-        tanks = new Tank[amount];
         allBullets = new ArrayList<>();
+        tanks = new Tank[amount];
 
-        this.setBounds(100, 20, width * side, width * side);
+        this.setBounds(0, 0, width * side, width * side);
         this.setOpaque(true);
         this.setLayout(null);
     }
@@ -53,6 +53,9 @@ public class MazePanel extends JPanel {
         g2d = image.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        createObjects();
+        setKeyBinds();
+        startBulletThread();
         Thread thread = new Thread(() -> {
             long startTime;
             long time;
@@ -79,9 +82,6 @@ public class MazePanel extends JPanel {
                 }
             }
         });
-        createObjects();
-        setKeyBinds();
-        startBulletThread();
         thread.start();
     }
 
@@ -109,25 +109,27 @@ public class MazePanel extends JPanel {
         }
     }
 
-    private void startBulletThread() throws ConcurrentModificationException{
+    private void startBulletThread() {
         Thread bulletThread = new Thread(() -> {
             while (running) {
                 for (Tank tank : tanks) {
                     List<Bullet> bullets = tank.getBullets();
 
                     synchronized (bullets) {
-                        Iterator<Bullet> iter = bullets.iterator();
-                        while (iter.hasNext()) {
-                            Bullet bullet = iter.next();
-                            bullet.update(mazeGrid, cellWidth, wallWidth);
+                        List<Bullet> toRemove = new ArrayList<>();
 
+                        for (Bullet bullet : new ArrayList<>(bullets)) {
+                            bullet.update(mazeGrid, cellWidth, wallWidth);
                             if (!bullet.check()) {
-                                iter.remove();
+                                toRemove.add(bullet);
                             }
                         }
+
+                        bullets.removeAll(toRemove);
                     }
                 }
-                sleep(4);
+
+                sleep(5);
             }
         });
         bulletThread.start();
@@ -163,6 +165,9 @@ public class MazePanel extends JPanel {
                             break;
                         }
                     }
+                }
+                if (code == 27) {
+                    parentPanel.backToMenu();
                 }
             }
 
@@ -262,7 +267,7 @@ public class MazePanel extends JPanel {
         }
 
         long now = System.currentTimeMillis();
-        long iframeDuration = 100;
+        long iframeDuration = 120;
         for (Tank tank : tanks) {
             for (Bullet bullet : allBullets) {
                 if (bullet != null && tank.isAlive()) {
@@ -293,8 +298,10 @@ public class MazePanel extends JPanel {
 
     private void render() {
         Graphics g = getGraphics();
-        g.drawImage(image, 0, 0, null);
-        g.dispose();
+        if (g != null) {
+            g.drawImage(image, 0, 0, null);
+            g.dispose();
+        }
     }
 
     private void checkRoundEnd() {
@@ -308,8 +315,8 @@ public class MazePanel extends JPanel {
         if (!roundOver && alive.size() <= 1 && tanks.length > 1) {
             Tank winner = alive.isEmpty() ? null : alive.get(0);
 
-            if (parentFrame != null) {
-                parentFrame.updateWins(winner);
+            if (parentPanel != null) {
+                parentPanel.updateWins(winner);
             }
 
             roundOver = true;

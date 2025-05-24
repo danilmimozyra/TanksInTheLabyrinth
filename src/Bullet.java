@@ -14,8 +14,8 @@ public class Bullet {
     private final double size;
     private final TankType owner;
 
-    public Bullet (double x, double y, double angle, double size, double speed, TankType type){
-        x += Tank.tankWidth/ 2 - (size / 2);
+    public Bullet(double x, double y, double angle, double size, double speed, TankType type) {
+        x += Tank.tankWidth / 2 - (size / 2);
         y += Tank.tankWidth / 2 - (size / 2);
         owner = type;
         this.x = x;
@@ -31,8 +31,8 @@ public class Bullet {
         double nextX = x + dx;
         double nextY = y + dy;
 
-        int cellX = (int)((nextX + size / 2) / cellSize);
-        int cellY = (int)((nextY + size / 2) / cellSize);
+        int cellX = (int) ((nextX + size / 2) / cellSize);
+        int cellY = (int) ((nextY + size / 2) / cellSize);
 
         if (cellX < 0 || cellY < 0 || cellY >= mazeGrid.length || cellX >= mazeGrid[0].length) {
             return;
@@ -76,11 +76,11 @@ public class Bullet {
         return y;
     }
 
-    public double getCenterX(){
+    public double getCenterX() {
         return x + size / 2;
     }
 
-    public double getCenterY(){
+    public double getCenterY() {
         return y + size / 2;
     }
 

@@ -49,51 +49,47 @@ public class Tank {
     public void goForth(Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double nextX = x + Math.cos(Math.toRadians(angle)) * forthSpeed;
         double nextY = y + Math.sin(Math.toRadians(angle)) * forthSpeed;
+        boolean goX = false;
+        boolean goY = false;
 
-        if (canMove(nextX, nextY, mazeGrid, cellSize, wallThickness)
-                && canMoveTo(nextX, nextY, mazeGrid, cellSize, wallThickness)) {
+        if (canMove(nextX, y, mazeGrid, cellSize, wallThickness)) {
+            goX = true;
+        }
+        if (canMove(x, nextY, mazeGrid, cellSize, wallThickness)) {
+            goY = true;
+        }
+
+        if (goX && goY) {
             x = nextX;
             y = nextY;
+        } else if (goX) {
+            x += (nextX - x) * 0.4;
+        } else if (goY) {
+            y += (nextY - y) * 0.4;
         }
     }
 
     public void goBack(Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double nextX = x - Math.cos(Math.toRadians(angle)) * backSpeed;
         double nextY = y - Math.sin(Math.toRadians(angle)) * backSpeed;
+        boolean goX = false;
+        boolean goY = false;
 
-        if (canMove(nextX, nextY, mazeGrid, cellSize, wallThickness)
-                && canMoveTo(nextX, nextY, mazeGrid, cellSize, wallThickness)) {
+        if (canMove(nextX, y, mazeGrid, cellSize, wallThickness)) {
+            goX = true;
+        }
+        if (canMove(x, nextY, mazeGrid, cellSize, wallThickness)) {
+            goY = true;
+        }
+
+        if (goX && goY) {
             x = nextX;
             y = nextY;
+        } else if (goX) {
+            x += (nextX - x) * 0.4;
+        } else if (goY) {
+            y += (nextY - y) * 0.4;
         }
-    }
-
-    public boolean canMoveTo(double nextX, double nextY, Tile[][] mazeGrid, int cellSize, int wallThickness) {
-        double[][] corners = {
-                {nextX, nextY},
-                {nextX + tankWidth, nextY},
-                {nextX, nextY + tankWidth},
-                {nextX + tankWidth, nextY + tankWidth}
-        };
-
-        for (double[] corner : corners) {
-            int cellX = (int) (corner[0] / cellSize);
-            int cellY = (int) (corner[1] / cellSize);
-
-            if (cellX < 0 || cellY < 0 || cellY >= mazeGrid.length || cellX >= mazeGrid[0].length)
-                return false;
-
-            Tile cell = mazeGrid[cellY][cellX];
-            double localX = corner[0] % cellSize;
-            double localY = corner[1] % cellSize;
-
-            if (localX <= wallThickness && cell.isLeftWall()) return false;
-            if (localX >= cellSize - wallThickness && cell.isRightWall()) return false;
-            if (localY <= wallThickness && cell.isTopWall()) return false;
-            if (localY >= cellSize - wallThickness && cell.isBottomWall()) return false;
-        }
-
-        return true;
     }
 
     public boolean canMove(double nextX, double nextY, Tile[][] mazeGrid, int cellSize, int wallThickness) {
@@ -138,12 +134,10 @@ public class Tank {
         double localX = x % cellSize;
         double localY = y % cellSize;
 
-        if (localX <= wallThickness && cell.isLeftWall()) return true;
-        if (localX >= cellSize - wallThickness && cell.isRightWall()) return true;
-        if (localY <= wallThickness && cell.isTopWall()) return true;
-        if (localY >= cellSize - wallThickness && cell.isBottomWall()) return true;
-
-        return false;
+        return (localX <= wallThickness && cell.isLeftWall()) ||
+                (localX >= cellSize - wallThickness && cell.isRightWall()) ||
+                (localY <= wallThickness && cell.isTopWall()) ||
+                (localY >= cellSize - wallThickness && cell.isBottomWall());
     }
 
     public void changeAngle(double angle) {
@@ -227,10 +221,6 @@ public class Tank {
 
     public Key getKey() {
         return key;
-    }
-
-    public void setKey(Key key){
-        this.key = key;
     }
 
     public TankType getColor() {
