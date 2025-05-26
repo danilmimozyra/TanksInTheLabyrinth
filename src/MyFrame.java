@@ -1,42 +1,48 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class MyFrame extends JFrame {
+
+    private final JLabel whiteLabel;
     private final MenuPanel menuPanel;
     private GamePanel gamePanel;
 
     public MyFrame() {
         setTitle("Tanks Game");
-        setSize(1500, 850);
+        setSize(1500, 900);
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
 
+        whiteLabel = new JLabel();
+        whiteLabel.setBounds(0,0, getWidth(), getHeight());
+        whiteLabel.setOpaque(true);
+        whiteLabel.setBackground(Color.white);
+
+
         menuPanel = new MenuPanel(this);
         add(menuPanel);
-        menuPanel.setLocation((this.getWidth() - menuPanel.getWidth()) / 2, (this.getHeight() - menuPanel.getHeight()) / 2);
+        add(whiteLabel);
+        menuPanel.setLocation((this.getWidth() - menuPanel.getWidth()) / 2, 0);
         setVisible(true);
     }
 
     public void startGame(int amountOfPlayers) {
         remove(menuPanel);
-        if (gamePanel != null) {
-            remove(gamePanel);
-        }
-
         gamePanel = new GamePanel(8, 86, 2, amountOfPlayers, this);
         add(gamePanel);
-        gamePanel.setLocation((this.getWidth() - gamePanel.getWidth()) / 2, (this.getHeight() - gamePanel.getHeight()) / 2);
+        add(whiteLabel);
+        gamePanel.setLocation(((this.getWidth() - gamePanel.getWidth() + 350) / 2) - 350, 0);
         gamePanel.getMazePanel().start();
         revalidate();
         repaint();
     }
 
     public void backToMenu() {
-        if (gamePanel != null) {
-            remove(gamePanel);
-            gamePanel = null;
-        }
+        remove(gamePanel);
         add(menuPanel);
-        menuPanel.setLocation((this.getWidth() - menuPanel.getWidth()) / 2, (this.getHeight() - menuPanel.getHeight()) / 2);
+        add(whiteLabel);
+        menuPanel.setLocation((this.getWidth() - menuPanel.getWidth()) / 2, 0);
         revalidate();
         repaint();
     }

@@ -39,7 +39,7 @@ public class MazePanel extends JPanel {
         allBullets = new ArrayList<>();
         tanks = new Tank[amount];
 
-        this.setBounds(0, 0, width * side, width * side);
+        this.setBounds(350, 0, width * side, width * side);
         this.setOpaque(true);
         this.setLayout(null);
     }
@@ -350,6 +350,7 @@ public class MazePanel extends JPanel {
             }
         }
         setMapGrid(mazeGrid, 0, 0);
+        breakRandomWalls(6);
     }
 
     private void setMapGrid(Tile[][] maze, int x, int y) {
@@ -366,6 +367,44 @@ public class MazePanel extends JPanel {
                 setMapGrid(maze, nx, ny);
             }
         }
+    }
+
+    private void breakRandomWalls(int count) {
+        Random random = new Random();
+
+        int broken = 0;
+        while (broken < count) {
+            int x = random.nextInt(side);
+            int y = random.nextInt(side);
+
+            List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
+            Collections.shuffle(directions);
+
+            for (Direction dir : directions) {
+                int nx = x + dir.dx;
+                int ny = y + dir.dy;
+
+                if (isInBounds(nx, ny)) {
+                    Tile current = mazeGrid[y][x];
+                    Tile neighbor = mazeGrid[ny][nx];
+
+                    if (hasWallBetween(current, neighbor, dir)) {
+                        removeWall(current, neighbor, dir);
+                        broken++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean hasWallBetween(Tile current, Tile neighbor, Direction dir) {
+        return switch (dir) {
+            case UP -> current.isTopWall() && neighbor.isBottomWall();
+            case RIGHT -> current.isRightWall() && neighbor.isLeftWall();
+            case DOWN -> current.isBottomWall() && neighbor.isTopWall();
+            case LEFT -> current.isLeftWall() && neighbor.isRightWall();
+        };
     }
 
     public void removeWall(Tile current, Tile next, Direction dir) {

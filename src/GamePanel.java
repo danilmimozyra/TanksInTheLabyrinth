@@ -1,10 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements MouseListener {
 
     private final MyFrame parentFrame;
     private final MazePanel mazePanel;
+    private final JPanel controls;
+    private final ControlsPanel controlsPanel;
+    private final ButtonLabel controlsButton;
     private int redWins = 0;
     private final JLabel winRedTank;
     private int greenWins = 0;
@@ -17,10 +22,28 @@ public class GamePanel extends JPanel {
     private final int amount;
 
     public GamePanel(int side, int width, int pixelWidth, int amount, MyFrame frame) {
-        this.setLayout(null);
-        this.setBounds(0, 0, side * width, side * width + 72);
+        setLayout(null);
+        setSize(side * width + 350, side * width + 72);
+        setOpaque(true);
+        setBackground(Color.white);
 
         mazePanel = new MazePanel(side, width, pixelWidth, amount, this);
+
+        controls = new JPanel();
+        controls.setLayout(null);
+        controls.setBounds(0,0,350,670);
+        controls.setOpaque(true);
+        controls.setBackground(Color.white);
+
+        controlsPanel = new ControlsPanel(amount);
+        controlsPanel.setLocation(0,150);
+
+        controlsButton = new ButtonLabel();
+        controlsButton.setText("Controls");
+        controlsButton.setBounds(0, 0, 350, 150);
+        controlsButton.addMouseListener(this);
+
+
         parentFrame = frame;
         this.amount = amount;
 
@@ -49,13 +72,17 @@ public class GamePanel extends JPanel {
         winYellowTank.setHorizontalTextPosition(SwingConstants.RIGHT);
 
         winsPanel = new JPanel();
-        winsPanel.setBounds(0, this.getHeight() - 72, side * width, 72);
+        winsPanel.setBounds(350, this.getHeight() - 72, side * width, 72);
         winsPanel.setLayout(null);
+        winsPanel.setOpaque(true);
+        winsPanel.setBackground(Color.white);
         setWinsPanel();
         updateWins(null);
 
+        controls.add(controlsButton);
         this.add(mazePanel);
         this.add(winsPanel);
+        this.add(controls);
 
         this.setVisible(true);
     }
@@ -107,5 +134,42 @@ public class GamePanel extends JPanel {
 
     public MazePanel getMazePanel() {
         return mazePanel;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getSource() == controlsButton) {
+            for (Component component : controls.getComponents()) {
+                if (component instanceof JPanel) {
+                    if (component == controlsPanel) {
+                        controls.remove(controlsPanel);
+                        controls.repaint();
+                        return;
+                    }
+                }
+            }
+            controls.add(controlsPanel);
+            controls.repaint();
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }

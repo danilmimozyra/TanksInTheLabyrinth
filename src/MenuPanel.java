@@ -1,16 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class MenuPanel extends JPanel implements ActionListener {
+public class MenuPanel extends JPanel implements MouseListener {
 
-    private final JButton players2;
-    private final JButton players3;
-    private final JButton players4;
-    private final JLabel gameIcon;
+    private final JLabel players2;
+    private final JLabel players3;
+    private final JLabel players4;
     private final MyFrame childPanel;
-    private final JPanel buttonsPanel;
 
     public MenuPanel(MyFrame panel){
         this.setLayout(null);
@@ -18,31 +16,30 @@ public class MenuPanel extends JPanel implements ActionListener {
 
         childPanel = panel;
 
-        gameIcon = new JLabel();
+        JLabel gameIcon = new JLabel();
         gameIcon.setBounds(0,0, 1500, 640);
         gameIcon.setIcon(new ImageIcon("Resources/gameIcon.png"));
 
-        players2 = new JButton();
+        players2 = new ButtonLabel();
         players2.setBounds(100,0,300, 160);
-        players2.setFont(new Font("SansSerif", Font.BOLD, 48));
         players2.setText("2 Players");
-        players2.addActionListener(this);
+        players2.addMouseListener(this);
 
-        players3 = new JButton();
+        players3 = new ButtonLabel();
         players3.setBounds(600,0,300, 160);
-        players3.setFont(new Font("SansSerif", Font.BOLD, 48));
         players3.setText("3 Players");
-        players3.addActionListener(this);
+        players3.addMouseListener(this);
 
-        players4 = new JButton();
+        players4 = new ButtonLabel();
         players4.setBounds(1100,0,300, 160);
-        players4.setFont(new Font("SansSerif", Font.BOLD, 48));
         players4.setText("4 Players");
-        players4.addActionListener(this);
+        players4.addMouseListener(this);
 
-        buttonsPanel = new JPanel();
+        JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBounds(0, 640, 1500, 160);
         buttonsPanel.setLayout(null);
+        buttonsPanel.setOpaque(true);
+        buttonsPanel.setBackground(Color.white);
         buttonsPanel.add(players2);
         buttonsPanel.add(players3);
         buttonsPanel.add(players4);
@@ -52,13 +49,36 @@ public class MenuPanel extends JPanel implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         if (e.getSource() == players2) {
             childPanel.startGame(2);
+            players2.setFont(new Font("SansSerif", Font.BOLD, 38));
         } else if (e.getSource() == players3) {
             childPanel.startGame(3);
+            players3.setFont(new Font("SansSerif", Font.BOLD, 38));
         } else if (e.getSource() == players4) {
             childPanel.startGame(4);
+            players4.setFont(new Font("SansSerif", Font.BOLD, 38));
         }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
