@@ -1,3 +1,6 @@
+/**
+ * This class is used to represent controls of each tank
+ */
 public class Key {
     private final int forthKey;
     private final int backKey;

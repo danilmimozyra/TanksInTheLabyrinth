@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * This panel is used to create a menu
+ */
 public class MenuPanel extends JPanel implements MouseListener {
 
     private final JLabel players2;
@@ -53,6 +56,10 @@ public class MenuPanel extends JPanel implements MouseListener {
 
     }
 
+    /**
+     * This method sets the amount of players
+     * @param e the event to be processed
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() == players2) {

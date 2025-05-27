@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * This class is a panel which contains the maze, score and information about controls
+ */
 public class GamePanel extends JPanel implements MouseListener {
 
     private final MyFrame parentFrame;
@@ -87,6 +90,10 @@ public class GamePanel extends JPanel implements MouseListener {
         this.setVisible(true);
     }
 
+    /**
+     * This method updates the panel which shows the score
+     * @param tank is the winning tank. It's score should be increased
+     */
     public void updateWins(Tank tank) {
         if (tank != null) {
             switch (tank.getColor()) {
@@ -102,6 +109,9 @@ public class GamePanel extends JPanel implements MouseListener {
         winYellowTank.setText(String.valueOf(yellowWins));
     }
 
+    /**
+     * This method is used to create the score panel determined by the amount of player
+     */
     private void setWinsPanel() {
         winsPanel.removeAll();
         if (amount == 2) {
@@ -141,6 +151,10 @@ public class GamePanel extends JPanel implements MouseListener {
 
     }
 
+    /**
+     * This method controls if any buttons were pressed
+     * @param e the event to be processed
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() == controlsButton) {

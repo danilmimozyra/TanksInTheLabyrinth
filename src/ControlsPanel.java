@@ -2,6 +2,9 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+/**
+ * This class is used to teach user about controls of the Tanks
+ */
 public class ControlsPanel extends JPanel {
 
     public ControlsPanel(int amount) {

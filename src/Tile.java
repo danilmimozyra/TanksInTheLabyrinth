@@ -1,5 +1,8 @@
 import javax.swing.*;
 
+/**
+ * This class is used to represent a singular cell in the maze
+ */
 public class Tile extends JLabel {
         private boolean visited;
         private boolean isTopWall;

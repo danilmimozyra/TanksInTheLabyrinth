@@ -1,10 +1,12 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to create a tank
+ */
 public class Tank {
 
     public final static double tankWidth = 38;
@@ -17,7 +19,7 @@ public class Tank {
     private boolean alive;
     private final List<Bullet> bullets;
     private int shotDelay;
-    private Key key;
+    private final Key key;
     private final TankType color;
 
 
@@ -31,6 +33,10 @@ public class Tank {
         key = new Key(forthKey, backKey, leftKey, rightKey, shootKey);
     }
 
+    /**
+     * This method is used to draw a tank onto the image
+     * @param g2d is a Graphics object which draws the tank onto the image
+     */
     public void draw(Graphics2D g2d) {
         AffineTransform oldTransform = g2d.getTransform();
         g2d.translate(x, y);
@@ -41,11 +47,22 @@ public class Tank {
         g2d.setTransform(oldTransform);
     }
 
+    /**
+     * This method is used to set location of the tank
+     * @param nx is the new x position
+     * @param ny is the new y position
+     */
     public void changeLocation(double nx, double ny) {
         x = nx;
         y = ny;
     }
 
+    /**
+     * This method is used to move forward
+     * @param mazeGrid is the maze in which the tank moves
+     * @param cellSize is the length of the single tile
+     * @param wallThickness is the thickness of the wall
+     */
     public void goForth(Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double nextX = x + Math.cos(Math.toRadians(angle)) * forthSpeed;
         double nextY = y + Math.sin(Math.toRadians(angle)) * forthSpeed;
@@ -69,6 +86,12 @@ public class Tank {
         }
     }
 
+    /**
+     * This method is used to move backwards
+     * @param mazeGrid is the maze in which the tank moves
+     * @param cellSize is the length of the single tile
+     * @param wallThickness is the thickness of the wall
+     */
     public void goBack(Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double nextX = x - Math.cos(Math.toRadians(angle)) * backSpeed;
         double nextY = y - Math.sin(Math.toRadians(angle)) * backSpeed;
@@ -92,6 +115,15 @@ public class Tank {
         }
     }
 
+    /**
+     * This method is used to determine if the tank can move to the new position
+     * @param nextX is the new x position
+     * @param nextY is the new y position
+     * @param mazeGrid is the maze in which the tank moves
+     * @param cellSize is the length of the single tile
+     * @param wallThickness is the thickness of the wall
+     * @return true if the tank can move to the next position
+     */
     public boolean canMove(double nextX, double nextY, Tile[][] mazeGrid, int cellSize, int wallThickness) {
         int step = 3;
         double checkX, checkY;
@@ -123,6 +155,15 @@ public class Tank {
         return true;
     }
 
+    /**
+     * This method checks if there is a wall at the new coordinates
+     * @param x is the x position that is being checked
+     * @param y is the y position that is being checked
+     * @param mazeGrid is the maze in which the tank moves
+     * @param cellSize is the length of the single tile
+     * @param wallThickness is the thickness of the wall
+     * @return true if there is a wall at the new coordinates
+     */
     private boolean isWallAt(double x, double y, Tile[][] mazeGrid, int cellSize, int wallThickness) {
         int cellX = (int) (x / cellSize);
         int cellY = (int) (y / cellSize);
@@ -140,6 +181,10 @@ public class Tank {
                 (localY >= cellSize - wallThickness && cell.isBottomWall());
     }
 
+    /**
+     * This method is used to change tank's angle
+     * @param angle is a new angle
+     */
     public void changeAngle(double angle) {
         if (angle < 0) {
             angle = 359;
@@ -212,8 +257,6 @@ public class Tank {
     public void increaseDelay() {
         shotDelay += 1;
     }
-
-    ;
 
     public void setShotDelay(int shotDelay) {
         this.shotDelay = shotDelay;

@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main frame of the game
+ */
 public class MyFrame extends JFrame {
 
     private final JLabel whiteLabel;
@@ -27,6 +30,10 @@ public class MyFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * This method is used to start the game
+     * @param amountOfPlayers is the amount of players
+     */
     public void startGame(int amountOfPlayers) {
         remove(menuPanel);
         gamePanel = new GamePanel(8, 86, 2, amountOfPlayers, this);
@@ -38,6 +45,9 @@ public class MyFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * This method is used to return back to th menu
+     */
     public void backToMenu() {
         remove(gamePanel);
         add(menuPanel);

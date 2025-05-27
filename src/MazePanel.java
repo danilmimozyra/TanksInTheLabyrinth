@@ -6,6 +6,9 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
+/**
+ * This panel is the main panel of the game. It contains the maze and the Tanks
+ */
 public class MazePanel extends JPanel {
 
     private final GamePanel parentPanel;
@@ -21,7 +24,7 @@ public class MazePanel extends JPanel {
 
     private final int FPS = 60;
     private final int loopTime = 1000000000 / FPS;
-    private Tank[] tanks;
+    private final Tank[] tanks;
     private final List<Bullet> allBullets;
 
     private boolean roundOver = false;
@@ -44,6 +47,9 @@ public class MazePanel extends JPanel {
         this.setLayout(null);
     }
 
+    /**
+     * This is the main method of this class which is rendering all objects
+     */
     public void start() {
         newMaze();
         running = true;
@@ -85,6 +91,9 @@ public class MazePanel extends JPanel {
         thread.start();
     }
 
+    /**
+     * This method is used to initialise tanks based on the amount of players
+     */
     private void createObjects() {
         Tank redTank = new Tank("Resources/redTank.png", TankType.Red, 87, 83, 65, 68, 81);
         redTank.changeLocation(17, 21);
@@ -109,6 +118,9 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method starts and controls a thread responsible for processing bullets
+     */
     private void startBulletThread() {
         Thread bulletThread = new Thread(() -> {
             while (running) {
@@ -135,6 +147,9 @@ public class MazePanel extends JPanel {
         bulletThread.start();
     }
 
+    /**
+     * This method starts and controls a thread responsible for the controls of the tanks
+     */
     private void setKeyBinds() {
         requestFocus();
         addKeyListener(new KeyAdapter() {
@@ -236,8 +251,11 @@ public class MazePanel extends JPanel {
         keyThread.start();
     }
 
+    /**
+     * This method draws the maze and sets background color
+     */
     private void drawBackground() {
-        g2d.setPaint(Color.CYAN);
+        g2d.setPaint(new Color(0xdddddd));
         g2d.fillRect(0, 0, width, height);
 
         g2d.setPaint(Color.BLACK);
@@ -260,6 +278,9 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method draws all tanks and their bullets
+     */
     private void drawGame() {
         allBullets.clear();
         for (Tank tank : tanks) {
@@ -296,6 +317,9 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method is used for drawing single frames of the game
+     */
     private void render() {
         Graphics g = getGraphics();
         if (g != null) {
@@ -304,6 +328,9 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method checks if the round has ended and determines the winner
+     */
     private void checkRoundEnd() {
         List<Tank> alive = new ArrayList<>();
         for (Tank tank : tanks) {
@@ -324,14 +351,24 @@ public class MazePanel extends JPanel {
         }
     }
 
-    private void sleep(long speed) {
+    /**
+     * This method is used to stop a thread for a period of time
+     * @param time is the amount of time the thread should stop for
+     */
+    private void sleep(long time) {
         try {
-            Thread.sleep(speed);
+            Thread.sleep(time);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * This method is used to checking if a bullet has hit a tank
+     * @param bullet is the bullet that is being checked
+     * @param tank is the tank that is being checked
+     * @return true if the bullet has hit a tank
+     */
     public boolean isBulletHittingTank(Bullet bullet, Tank tank) {
         double dx = bullet.getCenterX() - tank.getCenterX();
         double dy = bullet.getCenterY() - tank.getCenterY();
@@ -343,6 +380,9 @@ public class MazePanel extends JPanel {
         return tank.isAlive() && distance < bulletRadius + tankRadius;
     }
 
+    /**
+     * This method is used to initialise maze
+     */
     public void newMaze() {
         for (int y = 0; y < side; y++) {
             for (int x = 0; x < side; x++) {
@@ -353,6 +393,12 @@ public class MazePanel extends JPanel {
         breakRandomWalls(6);
     }
 
+    /**
+     * This is a recursive method for creating a maze
+     * @param maze is a maze that should be created
+     * @param x is an x position of a single tile in the maze
+     * @param y is a y position of a single tile in the maze
+     */
     private void setMapGrid(Tile[][] maze, int x, int y) {
         maze[y][x].setVisited(true);
 
@@ -369,6 +415,10 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method is used to make new paths in the maze
+     * @param count is a number of walls that should be broken
+     */
     private void breakRandomWalls(int count) {
         Random random = new Random();
 
@@ -398,6 +448,13 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method checks if there is indeed a wall between two tiles that should be broken
+     * @param current is a current tile
+     * @param neighbor is an adjacent
+     * @param dir is a direction in which the wall should be broken
+     * @return true if there is a wall
+     */
     private boolean hasWallBetween(Tile current, Tile neighbor, Direction dir) {
         return switch (dir) {
             case UP -> current.isTopWall() && neighbor.isBottomWall();
@@ -407,6 +464,12 @@ public class MazePanel extends JPanel {
         };
     }
 
+    /**
+     * This method is used to remove walls between tiles
+     * @param current is a current tile
+     * @param next is an adjacent
+     * @param dir is a direction in which the wall should be broken
+     */
     public void removeWall(Tile current, Tile next, Direction dir) {
         switch (dir) {
             case UP:
@@ -428,6 +491,12 @@ public class MazePanel extends JPanel {
         }
     }
 
+    /**
+     * This method checks if the coordinates of the tile is in the maze bounds
+     * @param x is an x position of the tile
+     * @param y is a y position of the tile
+     * @return true if is in the bounds
+     */
     public boolean isInBounds(int x, int y) {
         return x >= 0 && x < side && y >= 0 && y < side;
     }

@@ -3,6 +3,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * This class is a JLabel the user can interact with
+ */
 public class ButtonLabel extends JLabel implements MouseListener {
 
     public ButtonLabel(){
