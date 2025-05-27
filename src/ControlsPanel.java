@@ -26,6 +26,7 @@ public class ControlsPanel extends JPanel {
         JLabel shootRed = new JLabel();
         shootRed.setBounds(150, 0, 50, 50);
         shootRed.setFont(new Font("SansSerif", Font.BOLD, 20));
+        shootRed.setHorizontalAlignment(JLabel.CENTER);
         shootRed.setText("Q");
         shootRed.setOpaque(true);
         shootRed.setBackground(Color.RED);
@@ -34,6 +35,7 @@ public class ControlsPanel extends JPanel {
         JLabel upRed = new JLabel();
         upRed.setBounds(250, 0, 50, 50);
         upRed.setFont(new Font("SansSerif", Font.BOLD, 20));
+        upRed.setHorizontalAlignment(JLabel.CENTER);
         upRed.setText("W");
         upRed.setOpaque(true);
         upRed.setBackground(Color.RED);
@@ -42,6 +44,7 @@ public class ControlsPanel extends JPanel {
         JLabel downRed = new JLabel();
         downRed.setBounds(250, 50, 50, 50);
         downRed.setFont(new Font("SansSerif", Font.BOLD, 20));
+        downRed.setHorizontalAlignment(JLabel.CENTER);
         downRed.setText("S");
         downRed.setOpaque(true);
         downRed.setBackground(Color.RED);
@@ -50,6 +53,7 @@ public class ControlsPanel extends JPanel {
         JLabel leftRed = new JLabel();
         leftRed.setBounds(200, 50, 50, 50);
         leftRed.setFont(new Font("SansSerif", Font.BOLD, 20));
+        leftRed.setHorizontalAlignment(JLabel.CENTER);
         leftRed.setText("A");
         leftRed.setOpaque(true);
         leftRed.setBackground(Color.RED);
@@ -58,6 +62,7 @@ public class ControlsPanel extends JPanel {
         JLabel rightRed = new JLabel();
         rightRed.setBounds(300, 50, 50, 50);
         rightRed.setFont(new Font("SansSerif", Font.BOLD, 20));
+        rightRed.setHorizontalAlignment(JLabel.CENTER);
         rightRed.setText("D");
         rightRed.setOpaque(true);
         rightRed.setBackground(Color.RED);
@@ -83,6 +88,7 @@ public class ControlsPanel extends JPanel {
         JLabel shootGreen = new JLabel();
         shootGreen.setBounds(150, 0, 50, 50);
         shootGreen.setFont(new Font("SansSerif", Font.BOLD, 20));
+        shootGreen.setHorizontalAlignment(JLabel.CENTER);
         shootGreen.setText("0");
         shootGreen.setOpaque(true);
         shootGreen.setBackground(Color.green);
@@ -91,6 +97,7 @@ public class ControlsPanel extends JPanel {
         JLabel upGreen = new JLabel();
         upGreen.setBounds(250, 0, 50, 50);
         upGreen.setFont(new Font("SansSerif", Font.BOLD, 20));
+        upGreen.setHorizontalAlignment(JLabel.CENTER);
         upGreen.setText("8");
         upGreen.setOpaque(true);
         upGreen.setBackground(Color.green);
@@ -99,6 +106,7 @@ public class ControlsPanel extends JPanel {
         JLabel downGreen = new JLabel();
         downGreen.setBounds(250, 50, 50, 50);
         downGreen.setFont(new Font("SansSerif", Font.BOLD, 20));
+        downGreen.setHorizontalAlignment(JLabel.CENTER);
         downGreen.setText("5");
         downGreen.setOpaque(true);
         downGreen.setBackground(Color.green);
@@ -107,6 +115,7 @@ public class ControlsPanel extends JPanel {
         JLabel leftGreen = new JLabel();
         leftGreen.setBounds(200, 50, 50, 50);
         leftGreen.setFont(new Font("SansSerif", Font.BOLD, 20));
+        leftGreen.setHorizontalAlignment(JLabel.CENTER);
         leftGreen.setText("4");
         leftGreen.setOpaque(true);
         leftGreen.setBackground(Color.green);
@@ -115,6 +124,7 @@ public class ControlsPanel extends JPanel {
         JLabel rightGreen = new JLabel();
         rightGreen.setBounds(300, 50, 50, 50);
         rightGreen.setFont(new Font("SansSerif", Font.BOLD, 20));
+        rightGreen.setHorizontalAlignment(JLabel.CENTER);
         rightGreen.setText("6");
         rightGreen.setOpaque(true);
         rightGreen.setBackground(Color.GREEN);
@@ -141,6 +151,7 @@ public class ControlsPanel extends JPanel {
             JLabel shootBlue = new JLabel();
             shootBlue.setBounds(150, 0, 50, 50);
             shootBlue.setFont(new Font("SansSerif", Font.BOLD, 20));
+            shootBlue.setHorizontalAlignment(JLabel.CENTER);
             shootBlue.setText("Ctrl");
             shootBlue.setOpaque(true);
             shootBlue.setBackground(Color.blue);
@@ -149,6 +160,7 @@ public class ControlsPanel extends JPanel {
             JLabel upBlue = new JLabel();
             upBlue.setBounds(250, 0, 50, 50);
             upBlue.setFont(new Font("SansSerif", Font.BOLD, 20));
+            upBlue.setHorizontalAlignment(JLabel.CENTER);
             upBlue.setText("↑");
             upBlue.setOpaque(true);
             upBlue.setBackground(Color.blue);
@@ -157,6 +169,7 @@ public class ControlsPanel extends JPanel {
             JLabel downBlue = new JLabel();
             downBlue.setBounds(250, 50, 50, 50);
             downBlue.setFont(new Font("SansSerif", Font.BOLD, 20));
+            downBlue.setHorizontalAlignment(JLabel.CENTER);
             downBlue.setText("↓");
             downBlue.setOpaque(true);
             downBlue.setBackground(Color.blue);
@@ -165,6 +178,7 @@ public class ControlsPanel extends JPanel {
             JLabel leftBlue = new JLabel();
             leftBlue.setBounds(200, 50, 50, 50);
             leftBlue.setFont(new Font("SansSerif", Font.BOLD, 20));
+            leftBlue.setHorizontalAlignment(JLabel.CENTER);
             leftBlue.setText("←");
             leftBlue.setOpaque(true);
             leftBlue.setBackground(Color.blue);
@@ -173,6 +187,7 @@ public class ControlsPanel extends JPanel {
             JLabel rightBlue = new JLabel();
             rightBlue.setBounds(300, 50, 50, 50);
             rightBlue.setFont(new Font("SansSerif", Font.BOLD, 20));
+            rightBlue.setHorizontalAlignment(JLabel.CENTER);
             rightBlue.setText("→");
             rightBlue.setOpaque(true);
             rightBlue.setBackground(Color.blue);
@@ -199,6 +214,7 @@ public class ControlsPanel extends JPanel {
                 JLabel shootYellow = new JLabel();
                 shootYellow.setBounds(150, 0, 50, 50);
                 shootYellow.setFont(new Font("SansSerif", Font.BOLD, 16));
+                shootYellow.setHorizontalAlignment(JLabel.CENTER);
                 shootYellow.setText("Space");
                 shootYellow.setOpaque(true);
                 shootYellow.setBackground(Color.yellow);
@@ -207,6 +223,7 @@ public class ControlsPanel extends JPanel {
                 JLabel upYellow = new JLabel();
                 upYellow.setBounds(250, 0, 50, 50);
                 upYellow.setFont(new Font("SansSerif", Font.BOLD, 20));
+                upYellow.setHorizontalAlignment(JLabel.CENTER);
                 upYellow.setText("I");
                 upYellow.setOpaque(true);
                 upYellow.setBackground(Color.yellow);
@@ -215,6 +232,7 @@ public class ControlsPanel extends JPanel {
                 JLabel downYellow = new JLabel();
                 downYellow.setBounds(250, 50, 50, 50);
                 downYellow.setFont(new Font("SansSerif", Font.BOLD, 20));
+                downYellow.setHorizontalAlignment(JLabel.CENTER);
                 downYellow.setText("K");
                 downYellow.setOpaque(true);
                 downYellow.setBackground(Color.yellow);
@@ -223,6 +241,7 @@ public class ControlsPanel extends JPanel {
                 JLabel leftYellow = new JLabel();
                 leftYellow.setBounds(200, 50, 50, 50);
                 leftYellow.setFont(new Font("SansSerif", Font.BOLD, 20));
+                leftYellow.setHorizontalAlignment(JLabel.CENTER);
                 leftYellow.setText("J");
                 leftYellow.setOpaque(true);
                 leftYellow.setBackground(Color.yellow);
@@ -231,6 +250,7 @@ public class ControlsPanel extends JPanel {
                 JLabel rightYellow = new JLabel();
                 rightYellow.setBounds(300, 50, 50, 50);
                 rightYellow.setFont(new Font("SansSerif", Font.BOLD, 20));
+                rightYellow.setHorizontalAlignment(JLabel.CENTER);
                 rightYellow.setText("L");
                 rightYellow.setOpaque(true);
                 rightYellow.setBackground(Color.yellow);
