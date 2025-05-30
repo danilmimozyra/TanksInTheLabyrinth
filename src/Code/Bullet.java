@@ -1,3 +1,5 @@
+package Code;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -33,8 +35,8 @@ public class Bullet {
     /**
      * This is the most significant method in this class. It calculates the next position of the bullet
      * @param mazeGrid is a matrix of Tiles, it represents the maze
-     * @param cellSize is a length of the single Tile in pixels
-     * @param wallThickness is a thickness of the Tile border
+     * @param cellSize is a length of the single Code.Tile in pixels
+     * @param wallThickness is a thickness of the Code.Tile border
      */
     public void update(Tile[][] mazeGrid, int cellSize, int wallThickness) {
         double nextX = x + dx;
@@ -66,8 +68,8 @@ public class Bullet {
     }
 
     /**
-     * This method is used to draw the Bullet object
-     * @param g2d is Graphics of the picture the Bullet will be going to draw on
+     * This method is used to draw the Code.Bullet object
+     * @param g2d is Graphics of the picture the Code.Bullet will be going to draw on
      */
     public void draw(Graphics2D g2d) {
         AffineTransform oldTransform = g2d.getTransform();
@@ -78,8 +80,8 @@ public class Bullet {
     }
 
     /**
-     * This method is used to calculate the lifetime of the Bullet
-     * @return true if lifetime of the Bullet was less than 10 seconds
+     * This method is used to calculate the lifetime of the Code.Bullet
+     * @return true if lifetime of the Code.Bullet was less than 10 seconds
      */
     public boolean check() {
         return (System.currentTimeMillis() - creationTime) < 10000;

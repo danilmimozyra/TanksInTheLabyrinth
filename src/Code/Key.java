@@ -1,3 +1,5 @@
+package Code;
+
 /**
  * This class is used to represent controls of each tank
  */

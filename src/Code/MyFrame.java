@@ -1,3 +1,8 @@
+package Code;
+
+import Code.GamePanel;
+import Code.MenuPanel;
+
 import javax.swing.*;
 import java.awt.*;
 

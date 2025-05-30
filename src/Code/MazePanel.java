@@ -1,3 +1,10 @@
+package Code;
+
+import Code.Bullet;
+import Code.Direction;
+import Code.GamePanel;
+import Code.Key;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;

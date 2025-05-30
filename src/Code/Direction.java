@@ -1,3 +1,5 @@
+package Code;
+
 /**
  * This enum is used to build or break walls in the maze
  */

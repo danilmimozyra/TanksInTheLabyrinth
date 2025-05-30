@@ -1,3 +1,8 @@
+package Code;
+
+import Code.ButtonLabel;
+import Code.ControlsPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

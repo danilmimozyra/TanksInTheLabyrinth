@@ -1,3 +1,7 @@
+package Code;
+
+import Code.ButtonLabel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

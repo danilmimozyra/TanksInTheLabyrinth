@@ -1,3 +1,5 @@
+import Code.MyFrame;
+
 /**
  * Main
  */
